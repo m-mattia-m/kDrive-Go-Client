@@ -233,3 +233,6 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/goland,visualstudiocode,go,intellij
 /.idea/vcs.xml
+/.idea/.gitignore
+/.idea/kDrive.iml
+/.idea/modules.xml
