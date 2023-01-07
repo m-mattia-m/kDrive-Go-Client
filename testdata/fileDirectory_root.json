@@ -1,0 +1,42 @@
+{
+  "result": "success",
+  "data": [
+    {
+      "id": 17,
+      "name": "Files",
+      "type": "dir",
+      "status": null,
+      "visibility": "",
+      "drive_id": 550642,
+      "depth": 1,
+      "created_by": 927543,
+      "created_at": null,
+      "added_at": 1663532308,
+      "last_modified_at": 1673084771,
+      "parent_id": 1,
+      "color": null
+    },
+    {
+      "id": 34621,
+      "name": "test.txt",
+      "type": "file",
+      "status": null,
+      "visibility": "",
+      "drive_id": 550642,
+      "depth": 1,
+      "created_by": 927543,
+      "created_at": 1673044838,
+      "added_at": 1673044838,
+      "last_modified_at": 1673044844,
+      "parent_id": 1,
+      "size": 6,
+      "has_thumbnail": true,
+      "has_onlyoffice": false,
+      "mime_type": "text/plain",
+      "extension_type": "code"
+    }
+  ],
+  "items_per_page": 10,
+  "page": 1,
+  "response_at": 1673092847
+}
