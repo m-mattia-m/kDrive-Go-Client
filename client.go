@@ -17,7 +17,6 @@ const (
 	apiURL        = "https://api.infomaniak.com/"
 	apiVersion    = "2"
 	kDriveVersion = "2022-06-28"
-	maxRetries    = 3
 )
 
 type Token string
@@ -41,8 +40,6 @@ type Client struct {
 	apiVersion    string
 	kDriveVersion string
 	DriveId       DriveId
-
-	maxRetries int
 
 	Token Token
 
@@ -68,7 +65,6 @@ func NewClient(driveId DriveId, token Token, opts ...ClientOption) *Client {
 		DriveId:       driveId,
 		apiVersion:    apiVersion,
 		kDriveVersion: kDriveVersion,
-		maxRetries:    maxRetries,
 	}
 
 	//c.Activity = &ActivityClient{apiClient: c}
@@ -98,13 +94,6 @@ func WithHTTPClient(client *http.Client) ClientOption {
 func WithVersion(version string) ClientOption {
 	return func(c *Client) {
 		c.kDriveVersion = version
-	}
-}
-
-// WithRetry overrides the default number of max retry attempts on 429 errors
-func WithRetry(retries int) ClientOption {
-	return func(c *Client) {
-		c.maxRetries = retries
 	}
 }
 
@@ -139,7 +128,6 @@ func (c *Client) request(ctx context.Context, method string, urlStr string, quer
 	req.Header.Add("kDrive-Version", c.kDriveVersion)
 	req.Header.Add("Content-Type", "application/json")
 
-	failedAttempts := 0
 	var res *http.Response
 	for {
 		var err error
@@ -150,11 +138,6 @@ func (c *Client) request(ctx context.Context, method string, urlStr string, quer
 
 		if res.StatusCode != http.StatusTooManyRequests {
 			break
-		}
-
-		failedAttempts++
-		if failedAttempts == c.maxRetries {
-			return nil, &RateLimitedError{Message: fmt.Sprintf("Retry request with 429 response failed after %d retries", failedAttempts)}
 		}
 
 		retryAfterHeader := res.Header["Retry-After"]

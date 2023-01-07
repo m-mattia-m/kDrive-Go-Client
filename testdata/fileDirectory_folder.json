@@ -1,0 +1,53 @@
+{
+  "result": "success",
+  "data": [
+    {
+      "id": 23,
+      "name": "Private",
+      "type": "dir",
+      "status": null,
+      "visibility": "",
+      "drive_id": 550642,
+      "depth": 2,
+      "created_by": 927543,
+      "created_at": 1663532975,
+      "added_at": 1663532977,
+      "last_modified_at": 1673084771,
+      "parent_id": 17,
+      "color": null
+    },
+    {
+      "id": 24,
+      "name": "Work",
+      "type": "dir",
+      "status": null,
+      "visibility": "",
+      "drive_id": 550642,
+      "depth": 2,
+      "created_by": 927543,
+      "created_at": 1671783867,
+      "added_at": 1671814379,
+      "last_modified_at": 1673037804,
+      "parent_id": 17,
+      "color": null
+    },
+    {
+      "id": 25,
+      "name": "Documents",
+      "type": "dir",
+      "status": null,
+      "visibility": "",
+      "drive_id": 550642,
+      "depth": 2,
+      "created_by": 927543,
+      "created_at": 1631468505,
+      "added_at": 1663533274,
+      "last_modified_at": 1672985209,
+      "parent_id": 17,
+      "color": null
+    }
+  ],
+  "items_per_page": 10,
+  "page": 1,
+  "response_at": 1673100753
+}

@@ -1,8 +1,6 @@
 package kDrive_test
 
 import (
-	"context"
-	"kDrive"
 	"net/http"
 	"os"
 	"testing"
@@ -37,45 +35,5 @@ func newMockedClient(t *testing.T, requestMockFile string, statusCode int) *http
 			Header:     make(http.Header),
 		}
 		return resp
-	})
-}
-
-func TestRateLimit(t *testing.T) {
-	t.Run("List files and directories", func(t *testing.T) {
-		c := newTestClient(func(*http.Request) *http.Response {
-			return &http.Response{
-				StatusCode: http.StatusTooManyRequests,
-				Header:     http.Header{"Retry-After": []string{"0"}},
-			}
-		}) // .WithHTTPClient(c)
-		client := kDrive.NewClient("some_kDrive_Id", "some_token", kDrive.WithHTTPClient(c), kDrive.WithRetry(2))
-		_, err := client.File.GetDirectoryAndFiles(context.Background(), "some_file_id")
-		if err == nil {
-			t.Errorf("Get() error = %v", err)
-		}
-		wantErr := "Retry request with 429 response failed after 2 retries"
-		if err.Error() != wantErr {
-			t.Errorf("Get() error = %v, wantErr %s", err, wantErr)
-		}
-	})
-
-	t.Run("should make maxRetries attempts", func(t *testing.T) {
-		attempts := 0
-		maxRetries := 2
-		c := newTestClient(func(*http.Request) *http.Response {
-			attempts++
-			return &http.Response{
-				StatusCode: http.StatusTooManyRequests,
-				Header:     http.Header{"Retry-After": []string{"0"}},
-			}
-		})
-		client := kDrive.NewClient("some_kDrive_Id", "some_token", kDrive.WithHTTPClient(c), kDrive.WithRetry(maxRetries))
-		_, err := client.File.GetDirectoryAndFiles(context.Background(), "some_file_id")
-		if err == nil {
-			t.Errorf("Get() error = %v", err)
-		}
-		if attempts != maxRetries {
-			t.Errorf("Get() attempts = %v, want %v", attempts, maxRetries)
-		}
 	})
 }
