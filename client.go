@@ -40,23 +40,23 @@ type Client struct {
 	baseUrl       *url.URL
 	apiVersion    string
 	kDriveVersion string
-	driveId       DriveId
+	DriveId       DriveId
 
 	maxRetries int
 
 	Token Token
 
-	Activity ActivityService
-	//Files       FilesService
+	//Activity ActivityService
+	File FileService
 	//HtmlPage    HtmlPageService
-	//Invitations InvitationsService
+	//Invitation  InvitationsService
 	//SharedLink  SharedLinkService
-	//Settings    SettingsService
-	//Statistics  StatisticsService
-	//Users       UsersService
+	//Setting     SettingsService
+	//Statistic   StatisticsService
+	//User        UsersService
 }
 
-func NewClient(token Token, opts ...ClientOption) *Client {
+func NewClient(driveId DriveId, token Token, opts ...ClientOption) *Client {
 	u, err := url.Parse(apiURL)
 	if err != nil {
 		panic(err)
@@ -65,19 +65,20 @@ func NewClient(token Token, opts ...ClientOption) *Client {
 		httpClient:    http.DefaultClient,
 		Token:         token,
 		baseUrl:       u,
+		DriveId:       driveId,
 		apiVersion:    apiVersion,
 		kDriveVersion: kDriveVersion,
 		maxRetries:    maxRetries,
 	}
 
-	c.Activity = &ActivityClient{apiClient: c}
-	//c.Files = &FilesClient{apiClient: c}
+	//c.Activity = &ActivityClient{apiClient: c}
+	c.File = &FileClient{apiClient: c}
 	//c.HtmlPage = &HtmlPageClient{apiClient: c}
-	//c.Invitations = &InvitationsClient{apiClient: c}
+	//c.Invitations = &InvitationClient{apiClient: c}
 	//c.SharedLink = &SharedLinkClient{apiClient: c}
-	//c.Settings = &SettingsClient{apiClient: c}
-	//c.Statistics = &StatisticsClient{apiClient: c}
-	//c.Users = &UsersClient{apiClient: c}
+	//c.Setting = &SettingClient{apiClient: c}
+	//c.Statistic = &StatisticClient{apiClient: c}
+	//c.User = &UserClient{apiClient: c}
 
 	for _, opt := range opts {
 		opt(c)
@@ -108,7 +109,7 @@ func WithRetry(retries int) ClientOption {
 }
 
 func (c *Client) request(ctx context.Context, method string, urlStr string, queryParams map[string]string, requestBody interface{}) (*http.Response, error) {
-	u, err := c.baseUrl.Parse(fmt.Sprintf("%s/%s", c.apiVersion, urlStr))
+	u, err := c.baseUrl.Parse(fmt.Sprintf("%s/drive/%s/%s", c.apiVersion, c.DriveId, urlStr))
 	if err != nil {
 		return nil, err
 	}
