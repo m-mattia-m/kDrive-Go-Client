@@ -17,6 +17,8 @@ $ go get github.com/m-mattia-m/kdrive-go-client
 # Getting started
 The official [development website of Infomaniak](https://developer.infomaniak.com/) is used as API-documentation.
 
+1. [Create here a token](https://manager.infomaniak.com/v3/628513/ng/accounts/token/list)
+2. 
 ## Example
 
 Make a new `Client`
