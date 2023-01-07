@@ -18,17 +18,57 @@ func (fId FileId) String() string {
 	return string(fId)
 }
 
-type DirectoryList struct {
-	Result       string          `json:"result"`
-	Data         []FileDirectory `json:"data"`
-	Total        int             `json:"total"`
-	Page         int             `json:"page"`
-	Pages        int             `json:"pages"`
-	ItemsPerPage int             `json:"items_per_page"`
-	ResponseAt   int             `json:"response_at"`
+type List struct {
+	Result       string              `json:"result"`
+	Data         []FileDirectoryList `json:"data"`
+	Total        int                 `json:"total"`
+	Page         int                 `json:"page"`
+	Pages        int                 `json:"pages"`
+	ItemsPerPage int                 `json:"items_per_page"`
+	ResponseAt   int                 `json:"response_at"`
 }
 
-type Directory struct {
+type FileDirectoryList struct {
+	Id                     int                    `json:"id"`
+	Name                   string                 `json:"name"`
+	SortedName             string                 `json:"sorted_name"`
+	Path                   string                 `json:"path"`
+	Type                   string                 `json:"type"`
+	Status                 string                 `json:"status"`
+	Visibility             string                 `json:"visibility"`
+	DriveId                int                    `json:"drive_id"`
+	Depth                  int                    `json:"depth"`
+	CreatedBy              int                    `json:"created_by"`
+	CreatedAt              int                    `json:"created_at"`
+	AddedAt                int                    `json:"added_at"`
+	LastModifiedAt         int                    `json:"last_modified_at"`
+	ParentId               int                    `json:"parent_id"`
+	DeletedAt              int                    `json:"deleted_at"`
+	DeletedBy              int                    `json:"deleted_by"`
+	SharedRootId           int                    `json:"shared_root_id"`
+	Users                  []int                  `json:"users"`
+	Teams                  []int                  `json:"teams"`
+	IsFavorite             bool                   `json:"is_favorite"`
+	Activity               Activity               `json:"activity"`
+	ShareLink              ShareLink              `json:"sharelink"`
+	Capabilities           Capabilities           `json:"capabilities"`
+	Lock                   Lock                   `json:"lock"`
+	Categories             []FileCategory         `json:"categories"`
+	Etag                   string                 `json:"etag"`
+	Color                  string                 `json:"color"`
+	Dropbox                Dropbox                `json:"dropbox"`
+	ExternalImport         ExternalImport         `json:"external_import"`
+	Parents                []Directory            `json:"parents"`
+	Size                   int                    `json:"size"`
+	HasThumbnail           bool                   `json:"has_thumbnail"`
+	HasOnlyOffice          bool                   `json:"has_onlyoffice"`
+	MimeType               string                 `json:"mime_type"`
+	ExtensionType          string                 `json:"extension_type"`
+	Version                Version                `json:"version"`
+	ConversionCapabilities ConversionCapabilities `json:"conversion_capabilities"`
+}
+
+type DirectoryList struct {
 	Id             int            `json:"id"`
 	Name           string         `json:"name"`
 	SortedName     string         `json:"sorted_name"`
@@ -60,9 +100,34 @@ type Directory struct {
 	ExternalImport ExternalImport `json:"external_import"`
 }
 
-type FileDirectory struct {
-	Directory
+type FileList struct {
+	Id                     int                    `json:"id"`
+	Name                   string                 `json:"name"`
+	SortedName             string                 `json:"sorted_name"`
+	Path                   string                 `json:"path"`
+	Type                   string                 `json:"type"`
+	Status                 string                 `json:"status"`
+	Visibility             string                 `json:"visibility"`
+	DriveId                int                    `json:"drive_id"`
+	Depth                  int                    `json:"depth"`
+	CreatedBy              int                    `json:"created_by"`
+	CreatedAt              int                    `json:"created_at"`
+	AddedAt                int                    `json:"added_at"`
+	LastModifiedAt         int                    `json:"last_modified_at"`
+	ParentId               int                    `json:"parent_id"`
+	DeletedAt              int                    `json:"deleted_at"`
+	DeletedBy              int                    `json:"deleted_by"`
+	SharedRootId           int                    `json:"shared_root_id"`
 	Parents                []Directory            `json:"parents"`
+	Users                  []int                  `json:"users"`
+	Teams                  []int                  `json:"teams"`
+	IsFavorite             bool                   `json:"is_favorite"`
+	Activity               Activity               `json:"activity"`
+	ShareLink              ShareLink              `json:"sharelink"`
+	Capabilities           Capabilities           `json:"capabilities"`
+	Lock                   Lock                   `json:"lock"`
+	Categories             []FileCategory         `json:"categories"`
+	Etag                   string                 `json:"etag"`
 	Size                   int                    `json:"size"`
 	HasThumbnail           bool                   `json:"has_thumbnail"`
 	HasOnlyOffice          bool                   `json:"has_onlyoffice"`
@@ -70,6 +135,99 @@ type FileDirectory struct {
 	ExtensionType          string                 `json:"extension_type"`
 	Version                Version                `json:"version"`
 	ConversionCapabilities ConversionCapabilities `json:"conversion_capabilities"`
+}
+
+type Directory struct {
+	Result         string         `json:"result"`
+	Id             int            `json:"id"`
+	Name           string         `json:"name"`
+	SortedName     string         `json:"sorted_name"`
+	Path           string         `json:"path"`
+	Type           string         `json:"type"`
+	Status         string         `json:"status"`
+	Visibility     string         `json:"visibility"`
+	DriveId        int            `json:"drive_id"`
+	Depth          int            `json:"depth"`
+	CreatedBy      int            `json:"created_by"`
+	CreatedAt      int            `json:"created_at"`
+	AddedAt        int            `json:"added_at"`
+	LastModifiedAt int            `json:"last_modified_at"`
+	ParentId       int            `json:"parent_id"`
+	DeletedAt      int            `json:"deleted_at"`
+	DeletedBy      int            `json:"deleted_by"`
+	SharedRootId   int            `json:"shared_root_id"`
+	Users          []int          `json:"users"`
+	Teams          []int          `json:"teams"`
+	IsFavorite     bool           `json:"is_favorite"`
+	Activity       Activity       `json:"activity"`
+	ShareLink      ShareLink      `json:"sharelink"`
+	Capabilities   Capabilities   `json:"capabilities"`
+	Lock           Lock           `json:"lock"`
+	Categories     []FileCategory `json:"categories"`
+	Etag           string         `json:"etag"`
+	Color          string         `json:"color"`
+	Dropbox        Dropbox        `json:"dropbox"`
+	ExternalImport ExternalImport `json:"external_import"`
+}
+
+type File struct {
+	Result                 string                 `json:"result"`
+	Id                     int                    `json:"id"`
+	Name                   string                 `json:"name"`
+	SortedName             string                 `json:"sorted_name"`
+	Path                   string                 `json:"path"`
+	Type                   string                 `json:"type"`
+	Status                 string                 `json:"status"`
+	Visibility             string                 `json:"visibility"`
+	DriveId                int                    `json:"drive_id"`
+	Depth                  int                    `json:"depth"`
+	CreatedBy              int                    `json:"created_by"`
+	CreatedAt              int                    `json:"created_at"`
+	AddedAt                int                    `json:"added_at"`
+	LastModifiedAt         int                    `json:"last_modified_at"`
+	ParentId               int                    `json:"parent_id"`
+	DeletedAt              int                    `json:"deleted_at"`
+	DeletedBy              int                    `json:"deleted_by"`
+	SharedRootId           int                    `json:"shared_root_id"`
+	Parents                []Directory            `json:"parents"`
+	Users                  []int                  `json:"users"`
+	Teams                  []int                  `json:"teams"`
+	IsFavorite             bool                   `json:"is_favorite"`
+	Activity               Activity               `json:"activity"`
+	ShareLink              ShareLink              `json:"sharelink"`
+	Capabilities           Capabilities           `json:"capabilities"`
+	Lock                   Lock                   `json:"lock"`
+	Categories             []FileCategory         `json:"categories"`
+	Etag                   string                 `json:"etag"`
+	Size                   int                    `json:"size"`
+	HasThumbnail           bool                   `json:"has_thumbnail"`
+	HasOnlyOffice          bool                   `json:"has_onlyoffice"`
+	MimeType               string                 `json:"mime_type"`
+	ExtensionType          string                 `json:"extension_type"`
+	Version                Version                `json:"version"`
+	ConversionCapabilities ConversionCapabilities `json:"conversion_capabilities"`
+}
+
+type ExternalImport struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Status    string `json:"status"`
+	Message   string `json:"message"`
+	CreatedAt int    `json:"created_at"`
+}
+
+type Version struct {
+	IsMultiple  bool `json:"is_multiple"`
+	Number      int  `json:"number"`
+	TotalSize   int  `json:"total_size"`
+	KeepForever bool `json:"keep_forever"`
+}
+
+type ConversionCapabilities struct {
+	WhenDownloading       bool   `json:"when_downloading"`
+	DownloadExtensions    int    `json:"download_extensions"`
+	WhenOnlyOfficeOpening bool   `json:"when_onlyoffice_opening"`
+	OnlyOfficeExtension   string `json:"onlyoffice_extension"`
 }
 
 type Activity struct {
@@ -114,6 +272,19 @@ type Lock struct {
 	Token       string `json:"token"`
 }
 
+type Dropbox struct {
+	Id             int          `json:"id"`
+	Uuid           string       `json:"uuid"`
+	Name           string       `json:"name"`
+	Url            string       `json:"url"`
+	UsersCount     int          `json:"users_count"`
+	CreatedBy      int          `json:"created_by"`
+	CreatedAt      int          `json:"created_at"`
+	UpdatedAt      int          `json:"updated_at"`
+	LastUploadedAt int          `json:"last_uploaded_at"`
+	Capabilities   Capabilities `json:"capabilities"`
+}
+
 type FileCategory struct {
 	CategoryId      int      `json:"category_id"`
 	AddedAt         int      `json:"added_at"`
@@ -130,39 +301,4 @@ type Category struct {
 	IsPredefined bool   `json:"is_predefined"`
 	CreatedBy    int    `json:"created_by"`
 	CreatedAt    int    `json:"created_at"`
-}
-
-type Dropbox struct {
-	Id             int          `json:"id"`
-	Uuid           string       `json:"uuid"`
-	Name           string       `json:"name"`
-	Url            string       `json:"url"`
-	UsersCount     int          `json:"users_count"`
-	CreatedBy      int          `json:"created_by"`
-	CreatedAt      int          `json:"created_at"`
-	UpdatedAt      int          `json:"updated_at"`
-	LastUploadedAt int          `json:"last_uploaded_at"`
-	Capabilities   Capabilities `json:"capabilities"`
-}
-
-type ExternalImport struct {
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	Status    string `json:"status"`
-	Message   string `json:"message"`
-	CreatedAt int    `json:"created_at"`
-}
-
-type Version struct {
-	IsMultiple  bool `json:"is_multiple"`
-	Number      int  `json:"number"`
-	TotalSize   int  `json:"total_size"`
-	KeepForever bool `json:"keep_forever"`
-}
-
-type ConversionCapabilities struct {
-	WhenDownloading       bool   `json:"when_downloading"`
-	DownloadExtensions    int    `json:"download_extensions"`
-	WhenOnlyOfficeOpening bool   `json:"when_onlyoffice_opening"`
-	OnlyOfficeExtension   string `json:"onlyoffice_extension"`
 }

@@ -19,7 +19,7 @@ func TestFileClient(t *testing.T) {
 			statusCode int
 			id         kDrive.DriveId
 			fileId     kDrive.FileId // for the root the id is an empty string
-			want       *kDrive.DirectoryList
+			want       *kDrive.List
 			wantErr    bool
 			err        error
 		}{
@@ -28,51 +28,45 @@ func TestFileClient(t *testing.T) {
 				id:         "some_id",
 				filePath:   "testdata/fileDirectory_root.json",
 				statusCode: http.StatusOK,
-				want: &kDrive.DirectoryList{
+				want: &kDrive.List{
 					Result: "success",
-					Data: []kDrive.FileDirectory{
+					Data: []kDrive.FileDirectoryList{
 						{
-							Directory: kDrive.Directory{
-								Id:             17,
-								Name:           "Files",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          1,
-								CreatedBy:      927543,
-								CreatedAt:      0,
-								AddedAt:        1663532308,
-								LastModifiedAt: 1673084771,
-								ParentId:       1,
-								Color:          "",
-							},
+							Id:             17,
+							Name:           "Files",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          1,
+							CreatedBy:      927543,
+							CreatedAt:      0,
+							AddedAt:        1663532308,
+							LastModifiedAt: 1673084771,
+							ParentId:       1,
+							Color:          "",
 						},
 						{
-							Directory: kDrive.Directory{
-								Id:             34621,
-								Name:           "test.txt",
-								Type:           "file",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          1,
-								CreatedBy:      927543,
-								CreatedAt:      1673044838,
-								AddedAt:        1673044838,
-								LastModifiedAt: 1673044844,
-								ParentId:       1,
-							},
-							Size:          6,
-							HasThumbnail:  true,
-							HasOnlyOffice: false,
-							MimeType:      "text/plain",
-							ExtensionType: "code",
+							Id:             34621,
+							Name:           "test.txt",
+							Type:           "file",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          1,
+							CreatedBy:      927543,
+							CreatedAt:      1673044838,
+							AddedAt:        1673044838,
+							LastModifiedAt: 1673044844,
+							ParentId:       1,
+							Size:           6,
+							HasThumbnail:   true,
+							HasOnlyOffice:  false,
+							MimeType:       "text/plain",
+							ExtensionType:  "code",
 						},
 					},
-					Total:        0,
 					Page:         1,
-					Pages:        0,
 					ItemsPerPage: 10,
 					ResponseAt:   1673092847,
 				},
@@ -90,6 +84,21 @@ func TestFileClient(t *testing.T) {
 					return
 				}
 				if !reflect.DeepEqual(got, test.want) {
+					fmt.Println("---------------------")
+					fmt.Println("Want")
+					json2, err := json.Marshal(test.want)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println(string(json2))
+					fmt.Println("---------------------")
+					fmt.Println("Got")
+					json, err := json.Marshal(got)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println(string(json))
+					fmt.Println("---------------------")
 					t.Errorf("Get() got = %v, want %v", got, test.want)
 				}
 			})
@@ -103,7 +112,7 @@ func TestFileClient(t *testing.T) {
 			statusCode int
 			id         kDrive.DriveId
 			fileId     kDrive.FileId
-			want       *kDrive.DirectoryList
+			want       *kDrive.List
 			wantErr    bool
 			err        error
 		}{
@@ -112,59 +121,53 @@ func TestFileClient(t *testing.T) {
 				id:         "some_id",
 				filePath:   "testdata/fileDirectory_folder.json",
 				statusCode: http.StatusOK,
-				want: &kDrive.DirectoryList{
+				want: &kDrive.List{
 					Result: "success",
-					Data: []kDrive.FileDirectory{
+					Data: []kDrive.FileDirectoryList{
 						{
-							Directory: kDrive.Directory{
-								Id:             23,
-								Name:           "Private",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1663532975,
-								AddedAt:        1663532977,
-								LastModifiedAt: 1673084771,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             23,
+							Name:           "Private",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1663532975,
+							AddedAt:        1663532977,
+							LastModifiedAt: 1673084771,
+							ParentId:       17,
+							Color:          "",
 						},
 						{
-							Directory: kDrive.Directory{
-								Id:             24,
-								Name:           "Work",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1671783867,
-								AddedAt:        1671814379,
-								LastModifiedAt: 1673037804,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             24,
+							Name:           "Work",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1671783867,
+							AddedAt:        1671814379,
+							LastModifiedAt: 1673037804,
+							ParentId:       17,
+							Color:          "",
 						},
 						{
-							Directory: kDrive.Directory{
-								Id:             25,
-								Name:           "Documents",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1631468505,
-								AddedAt:        1663533274,
-								LastModifiedAt: 1672985209,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             25,
+							Name:           "Documents",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1631468505,
+							AddedAt:        1663533274,
+							LastModifiedAt: 1672985209,
+							ParentId:       17,
+							Color:          "",
 						},
 					},
 					Total:        0,
@@ -187,19 +190,7 @@ func TestFileClient(t *testing.T) {
 					return
 				}
 				if !reflect.DeepEqual(got, test.want) {
-					fmt.Println("---------------------")
-					json2, err := json.Marshal(test.want)
-					if err != nil {
-						fmt.Println(err)
-					}
-					fmt.Println(string(json2))
-					fmt.Println("---------------------")
-					json, err := json.Marshal(got)
-					if err != nil {
-						fmt.Println(err)
-					}
-					fmt.Println(string(json))
-					fmt.Println("---------------------")
+
 					t.Errorf("Get() got = %v, want %v", got, test.want)
 				}
 			})
@@ -213,7 +204,7 @@ func TestFileClient(t *testing.T) {
 			statusCode int
 			id         kDrive.DriveId
 			fileId     kDrive.FileId
-			want       *kDrive.DirectoryList
+			want       *kDrive.List
 			wantErr    bool
 			err        error
 		}{
@@ -222,59 +213,53 @@ func TestFileClient(t *testing.T) {
 				id:         "some_id",
 				filePath:   "testdata/fileDirectory_folder.json",
 				statusCode: http.StatusOK,
-				want: &kDrive.DirectoryList{
+				want: &kDrive.List{
 					Result: "success",
-					Data: []kDrive.FileDirectory{
+					Data: []kDrive.FileDirectoryList{
 						{
-							Directory: kDrive.Directory{
-								Id:             23,
-								Name:           "Private",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1663532975,
-								AddedAt:        1663532977,
-								LastModifiedAt: 1673084771,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             23,
+							Name:           "Private",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1663532975,
+							AddedAt:        1663532977,
+							LastModifiedAt: 1673084771,
+							ParentId:       17,
+							Color:          "",
 						},
 						{
-							Directory: kDrive.Directory{
-								Id:             24,
-								Name:           "Work",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1671783867,
-								AddedAt:        1671814379,
-								LastModifiedAt: 1673037804,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             24,
+							Name:           "Work",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1671783867,
+							AddedAt:        1671814379,
+							LastModifiedAt: 1673037804,
+							ParentId:       17,
+							Color:          "",
 						},
 						{
-							Directory: kDrive.Directory{
-								Id:             25,
-								Name:           "Documents",
-								Type:           "dir",
-								Status:         "",
-								Visibility:     "",
-								DriveId:        550642,
-								Depth:          2,
-								CreatedBy:      927543,
-								CreatedAt:      1631468505,
-								AddedAt:        1663533274,
-								LastModifiedAt: 1672985209,
-								ParentId:       17,
-								Color:          "",
-							},
+							Id:             25,
+							Name:           "Documents",
+							Type:           "dir",
+							Status:         "",
+							Visibility:     "",
+							DriveId:        550642,
+							Depth:          2,
+							CreatedBy:      927543,
+							CreatedAt:      1631468505,
+							AddedAt:        1663533274,
+							LastModifiedAt: 1672985209,
+							ParentId:       17,
+							Color:          "",
 						},
 					},
 					Total:        0,
@@ -297,19 +282,6 @@ func TestFileClient(t *testing.T) {
 					return
 				}
 				if !reflect.DeepEqual(got, test.want) {
-					fmt.Println("---------------------")
-					json2, err := json.Marshal(test.want)
-					if err != nil {
-						fmt.Println(err)
-					}
-					fmt.Println(string(json2))
-					fmt.Println("---------------------")
-					json, err := json.Marshal(got)
-					if err != nil {
-						fmt.Println(err)
-					}
-					fmt.Println(string(json))
-					fmt.Println("---------------------")
 					t.Errorf("Get() got = %v, want %v", got, test.want)
 				}
 			})
