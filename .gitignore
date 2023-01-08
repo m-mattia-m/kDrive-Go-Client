@@ -236,3 +236,6 @@ fabric.properties
 /.idea/.gitignore
 /.idea/kDrive.iml
 /.idea/modules.xml
+/.idea/jsonSchemas.xml
+
+/Examples/.env
