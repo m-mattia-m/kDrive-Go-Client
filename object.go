@@ -302,3 +302,9 @@ type Category struct {
 	CreatedBy    int    `json:"created_by"`
 	CreatedAt    int    `json:"created_at"`
 }
+
+type FileStream struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+	File []byte `json:"file"`
+}

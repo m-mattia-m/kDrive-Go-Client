@@ -98,7 +98,7 @@ func WithVersion(version string) ClientOption {
 }
 
 func (c *Client) request(ctx context.Context, method string, urlStr string, queryParams map[string]string, requestBody interface{}) (*http.Response, error) {
-	u, err := c.baseUrl.Parse(fmt.Sprintf("%s/drive/%s/%s", c.apiVersion, c.DriveId, urlStr))
+	u, err := c.baseUrl.Parse(fmt.Sprintf("%s/drive/%s/%s/", c.apiVersion, c.DriveId, urlStr))
 	if err != nil {
 		return nil, err
 	}

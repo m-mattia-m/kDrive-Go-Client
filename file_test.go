@@ -209,9 +209,9 @@ func TestFileClient(t *testing.T) {
 			err        error
 		}{
 			{
-				name:       "return the directories and files from a subfolder",
+				name:       "return a api error",
 				id:         "some_id",
-				filePath:   "testdata/fileDirectory_folder.json",
+				filePath:   "testdata/fileDirectory_error.json",
 				statusCode: http.StatusOK,
 				want: &kDrive.List{
 					Result: "success",
@@ -282,6 +282,62 @@ func TestFileClient(t *testing.T) {
 					return
 				}
 				if !reflect.DeepEqual(got, test.want) {
+					t.Errorf("Get() got = %v, want %v", got, test.want)
+				}
+			})
+		}
+	})
+
+	t.Run("DownloadFile", func(t *testing.T) {
+		var tests = []struct {
+			name       string
+			filePath   string
+			statusCode int
+			id         kDrive.DriveId
+			fileId     kDrive.FileId
+			want       *kDrive.FileStream
+			wantErr    bool
+			err        error
+		}{
+			{
+				name:       "return a file as a byte-array",
+				id:         "some_id",
+				filePath:   "testdata/fileDownload.json",
+				statusCode: http.StatusOK,
+				want: &kDrive.FileStream{
+					Name: "image.png",
+					Type: "image/png",
+					File: []byte{0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a},
+				},
+				wantErr: false,
+			},
+		}
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				c := newMockedClient(t, test.filePath, test.statusCode)
+				client := kDrive.NewClient("some_kDrive_Id", "some_token", kDrive.WithHTTPClient(c))
+				got, err := client.File.Download(context.Background(), test.fileId)
+
+				if (err != nil) != test.wantErr {
+					t.Errorf("Get() error = %v, wantErr %v", err, test.wantErr)
+					return
+				}
+				if !reflect.DeepEqual(got, test.want) {
+					fmt.Println("---------------------")
+					fmt.Println("Want")
+					json2, err := json.Marshal(test.want)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println(string(json2))
+					fmt.Println("---------------------")
+					fmt.Println("Got")
+					json, err := json.Marshal(got)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println(string(json))
+					fmt.Println("---------------------")
 					t.Errorf("Get() got = %v, want %v", got, test.want)
 				}
 			})
