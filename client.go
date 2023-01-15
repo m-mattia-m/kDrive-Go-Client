@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
-	"time"
 )
 
 const (
 	apiURL        = "https://api.infomaniak.com/"
+	appURL        = "https://kdrive.infomaniak.com/"
 	apiVersion    = "2"
 	kDriveVersion = "2022-06-28"
 )
@@ -37,6 +38,7 @@ type ClientOption func(*Client)
 type Client struct {
 	httpClient    *http.Client
 	baseUrl       *url.URL
+	appUrl        *url.URL
 	apiVersion    string
 	kDriveVersion string
 	DriveId       DriveId
@@ -47,21 +49,26 @@ type Client struct {
 	File FileService
 	//HtmlPage    HtmlPageService
 	//Invitation  InvitationsService
-	//SharedLink  SharedLinkService
+	Link LinkService
 	//Setting     SettingsService
 	//Statistic   StatisticsService
 	//User        UsersService
 }
 
 func NewClient(driveId DriveId, token Token, opts ...ClientOption) *Client {
-	u, err := url.Parse(apiURL)
+	apiUrl, err := url.Parse(apiURL)
+	if err != nil {
+		panic(err)
+	}
+	appUrl, err := url.Parse(appURL)
 	if err != nil {
 		panic(err)
 	}
 	c := &Client{
 		httpClient:    http.DefaultClient,
 		Token:         token,
-		baseUrl:       u,
+		baseUrl:       apiUrl,
+		appUrl:        appUrl,
 		DriveId:       driveId,
 		apiVersion:    apiVersion,
 		kDriveVersion: kDriveVersion,
@@ -71,7 +78,7 @@ func NewClient(driveId DriveId, token Token, opts ...ClientOption) *Client {
 	c.File = &FileClient{apiClient: c}
 	//c.HtmlPage = &HtmlPageClient{apiClient: c}
 	//c.Invitations = &InvitationClient{apiClient: c}
-	//c.SharedLink = &SharedLinkClient{apiClient: c}
+	c.Link = &LinkClient{apiClient: c}
 	//c.Setting = &SettingClient{apiClient: c}
 	//c.Statistic = &StatisticClient{apiClient: c}
 	//c.User = &UserClient{apiClient: c}
@@ -98,13 +105,24 @@ func WithVersion(version string) ClientOption {
 }
 
 func (c *Client) request(ctx context.Context, method string, urlStr string, queryParams map[string]string, requestBody interface{}) (*http.Response, error) {
+
+	if queryParams["per_page"] != "" {
+		perPage, err := strconv.Atoi(queryParams["per_page"])
+		if err != err {
+			return nil, err
+		}
+		if perPage < 1 || perPage > 1000 {
+			return nil, errors.New("query 'per_page' must be between 1 and 1000")
+		}
+	}
+
 	u, err := c.baseUrl.Parse(fmt.Sprintf("%s/drive/%s/%s/", c.apiVersion, c.DriveId, urlStr))
 	if err != nil {
 		return nil, err
 	}
 
 	var buf io.ReadWriter
-	if requestBody != nil && !reflect.ValueOf(requestBody).IsNil() {
+	if requestBody != nil && !reflect.ValueOf(&requestBody).IsNil() {
 		body, err := json.Marshal(requestBody)
 		if err != nil {
 			return nil, err
@@ -129,44 +147,20 @@ func (c *Client) request(ctx context.Context, method string, urlStr string, quer
 	req.Header.Add("Content-Type", "application/json")
 
 	var res *http.Response
-	for {
-		var err error
-		res, err = c.httpClient.Do(req.WithContext(ctx))
-		if err != nil {
-			return nil, err
-		}
-
-		if res.StatusCode != http.StatusTooManyRequests {
-			break
-		}
-
-		retryAfterHeader := res.Header["Retry-After"]
-		if len(retryAfterHeader) == 0 {
-			return nil, &RateLimitedError{Message: "Retry-After header missing from kDrive API response headers for 429 response"}
-		}
-		retryAfter := retryAfterHeader[0]
-
-		waitSeconds, err := strconv.Atoi(retryAfter)
-		if err != nil {
-			break // should not happen
-		}
-		select {
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		case <-time.After(time.Duration(waitSeconds) * time.Second):
-		}
+	res, err = c.httpClient.Do(req.WithContext(ctx))
+	if err != nil {
+		return nil, err
 	}
-
 	if res.StatusCode != http.StatusOK {
 		var apiErr Error
 		err = json.NewDecoder(res.Body).Decode(&apiErr)
+		apiErr.ErrorResult.Code = res.Status
+		apiErr.ErrorResult.Description += fmt.Sprintf(" -> %s", req.URL.String())
 		if err != nil {
 			return nil, err
 		}
-
 		return nil, &apiErr
 	}
-
 	return res, nil
 }
 

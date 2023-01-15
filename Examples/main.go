@@ -19,23 +19,25 @@ func main() {
 
 	tempToken := client.Token.String()
 
+	// TODO: type does not work -> , "type": kDrive.TypeDir
+	queryParams := map[string]string{"per_page": "25", "order": kDrive.OrderAsc}
+
 	// Get a list of directories and files in the root or a subdirectory
-	directorsFilesList, err := client.File.GetDirectoryAndFiles(context.Background(), kDrive.FileId(""))
+	directorsFilesList, err := client.File.GetDirectoryAndFiles(context.Background(), queryParams, kDrive.FileId("38837"))
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Call download method of the client
-	fileStream, err := client.File.Download(context.Background(), kDrive.FileId("38840"))
+	fileStream, err := client.File.Download(context.Background(), queryParams, kDrive.FileId("39387"))
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Create file for writing the image -> remove the path before the variable name to store the file in the current directory
-	file, err := os.Create(fmt.Sprintf("/Users/username/Desktop/%s", fileStream.Name))
+	file, err := os.Create(fmt.Sprintf("/Users/mattiamueggler/Desktop/%s", fileStream.Name))
 	if err != nil {
 		fmt.Printf("Error creating file: %s", err)
-		return
 	}
 	defer file.Close()
 
@@ -43,11 +45,37 @@ func main() {
 	_, err = io.Copy(file, bytes.NewReader(fileStream.File))
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
+
+	queryParams = map[string]string{}
+
+	// Call GetPrivateLink-Function to generate a public-access-link
+	privateLink, err := client.Link.GetPrivateLink(context.Background(), queryParams, kDrive.FileId("39387"))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Call GetSharedLink-Function to generate a private-access-link
+	sharedLinkBody := kDrive.SharedLinkBody{
+		CanComment:  true,
+		CanDownload: true,
+		CanEdit:     true,
+		CanSeeInfo:  true,
+		CanSeeStats: true,
+		Right:       kDrive.RightPublic,
+		ValidUntil:  0,
+	}
+	publicLink, err := client.Link.GetSharedLink(context.Background(), queryParams, kDrive.FileId("39409"), sharedLinkBody)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("")
 
 	_ = tempToken
 	_ = directorsFilesList
+	_ = privateLink
+	_ = publicLink
 }
 
 func init() {

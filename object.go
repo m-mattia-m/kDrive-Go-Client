@@ -1,5 +1,27 @@
 package kDrive
 
+const (
+	OrderByType           = "type"
+	OrderByPath           = "path"
+	OrderBySize           = "size"
+	OrderByAddedAt        = "added_at"
+	OrderByLastModifiedAt = "last_modified_at"
+	OrderByMimeType       = "mime_type"
+
+	OrderAsc     = "asc"
+	OrderDesc    = "desc"
+	OrderForAsc  = "asc"
+	OrderForDesc = "desc"
+
+	TypeDir   = "dir"
+	TypeFile  = "file"
+	TypeVault = "vault"
+
+	RightInherit  = "inherit"
+	RightPassword = "password"
+	RightPublic   = "public"
+)
+
 type ObjectType string
 
 func (ot ObjectType) String() string {
@@ -307,4 +329,38 @@ type FileStream struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 	File []byte `json:"file"`
+}
+
+type PrivateLink struct {
+	FileId  FileId  `json:"file_id"`
+	DriveId DriveId `json:"drive_id"`
+	Url     string  `json:"url"`
+}
+
+type SharedLink struct {
+	Result         string         `json:"result"`
+	SharedLinkData SharedLinkData `json:"data"`
+}
+
+type SharedLinkData struct {
+	Url           string       `json:"url"`
+	FileId        int          `json:"file_id"`
+	Right         string       `json:"right"`
+	ValidUntil    int          `json:"valid_until"`
+	CreatedBy     int          `json:"created_by"`
+	CreatedAt     int          `json:"created_at"`
+	UpdatedAt     int          `json:"updated_at"`
+	Capabilities  Capabilities `json:"capabilities"`
+	AccessBlocked bool         `json:"access_blocked"`
+}
+
+type SharedLinkBody struct {
+	CanComment  bool   `json:"can_commen,omitemptyt"`
+	CanDownload bool   `json:"can_download,omitempty"`
+	CanEdit     bool   `json:"can_edit,omitempty"`
+	CanSeeInfo  bool   `json:"can_see_info,omitempty"`
+	CanSeeStats bool   `json:"can_see_stats,omitempty"`
+	Password    string `json:"password,omitempty"`
+	Right       string `json:"right"`
+	ValidUntil  int    `json:"valid_until,omitempty"`
 }

@@ -13,22 +13,22 @@ import (
 )
 
 type FileService interface {
-	GetDirectoryAndFiles(ctx context.Context, fileId FileId) (*List, error)
+	GetDirectoryAndFiles(ctx context.Context, queryParams map[string]string, fileId FileId) (*List, error)
 	// Upload(context.Context, *FileRequest) (*object.File, error)
-	Download(ctx context.Context, fileId FileId) (*FileStream, error)
-	Thumbnail(ctx context.Context, fileId FileId) (*List, error)
+	Download(ctx context.Context, queryParams map[string]string, fileId FileId) (*FileStream, error)
+	Thumbnail(ctx context.Context, queryParams map[string]string, fileId FileId) (*List, error)
 }
 
 type FileClient struct {
 	apiClient *Client
 }
 
-func (fc FileClient) GetDirectoryAndFiles(ctx context.Context, fileId FileId) (*List, error) {
+func (fc FileClient) GetDirectoryAndFiles(ctx context.Context, queryParams map[string]string, fileId FileId) (*List, error) {
 	urlPath := "files"
 	if fileId != "" {
-		urlPath = fmt.Sprintf("%s/files", fileId.String())
+		urlPath += fmt.Sprintf("/%s/files", fileId.String())
 	}
-	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, nil, nil)
+	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, queryParams, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -75,9 +75,9 @@ func (fc FileClient) GetDirectoryAndFiles(ctx context.Context, fileId FileId) (*
 //	return &response, nil
 //}
 
-func (fc FileClient) Download(ctx context.Context, fileId FileId) (*FileStream, error) {
+func (fc FileClient) Download(ctx context.Context, queryParams map[string]string, fileId FileId) (*FileStream, error) {
 	urlPath := fmt.Sprintf("files/%s/download", fileId.String())
-	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, nil, nil)
+	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, queryParams, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -106,12 +106,12 @@ func (fc FileClient) Download(ctx context.Context, fileId FileId) (*FileStream, 
 	return &fileStream, nil
 }
 
-func (fc FileClient) Thumbnail(ctx context.Context, fileId FileId) (*List, error) {
+func (fc FileClient) Thumbnail(ctx context.Context, queryParams map[string]string, fileId FileId) (*List, error) {
 	urlPath := "files"
 	if fileId != "" {
 		urlPath = fmt.Sprintf("%s/files", fileId.String())
 	}
-	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, nil, nil)
+	res, err := fc.apiClient.request(ctx, http.MethodGet, urlPath, queryParams, nil)
 	if err != nil {
 		return nil, err
 	}
